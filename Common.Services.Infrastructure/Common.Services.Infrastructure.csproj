@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="MappingProfiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.DTO\Common.DTO.csproj" />
+  </ItemGroup>
+
+</Project>
