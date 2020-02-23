@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Common.WebApiCore.Controllers
 {
@@ -12,7 +14,8 @@ namespace Common.WebApiCore.Controllers
         /// Endpoint to handle telegram webhooks
         /// </summary>
         /// <returns></returns>
-        [Route("Handle")]
+        [HttpPost("Handle")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public IActionResult HandleWebhook()
         {
             return Ok();

@@ -2,6 +2,7 @@
 using Common.DTO;
 using Common.Services;
 using Common.Services.Infrastructure.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Utf8Json;
 
@@ -25,6 +26,8 @@ namespace Common.WebApiCore.Controllers
         /// </summary>
         /// <returns>UserDTO object</returns>
         [HttpGet("GetBotInfo")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+
         public async Task<IActionResult> GetBotInfo()
         {
             var bot = await this._telegramService.GetMeAsync();

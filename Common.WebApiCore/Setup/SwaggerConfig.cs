@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
 using System.Reflection;
 using System.IO;
 using System;
+using Microsoft.OpenApi.Models;
 
 namespace Common.WebApiCore.Setup
 {
@@ -13,7 +13,7 @@ namespace Common.WebApiCore.Setup
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info()
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Telegram Bot WebAPI",
                     Version = "v1"
@@ -29,7 +29,7 @@ namespace Common.WebApiCore.Setup
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Web Api");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 c.DefaultModelsExpandDepth(-1);
                 c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
             });
