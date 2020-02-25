@@ -5,12 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="Telegram.Bot" Version="15.4.0" />
     <PackageReference Include="Utf8Json" Version="1.3.7" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Common.Services.Infrastructure\Common.Services.Infrastructure.csproj" />
+    <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
   </ItemGroup>
 
 </Project>

@@ -5,12 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.2" />
     <PackageReference Include="Telegram.Bot" Version="15.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Common.DataAccess.EFCore\Common.DataAccess.EFCore.csproj" />
     <ProjectReference Include="..\Common.DelegateHandlers\Common.DelegateHandlers.csproj" />
     <ProjectReference Include="..\Common.Services.Infrastructure\Common.Services.Infrastructure.csproj" />
     <ProjectReference Include="..\Common.Services\Common.Services.csproj" />

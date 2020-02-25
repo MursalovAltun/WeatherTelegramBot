@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Common.DTO;
 using Common.Services.Infrastructure.Services;
+using Telegram.Bot.Types;
 using Utf8Json;
 
 namespace Common.Services
@@ -15,9 +16,9 @@ namespace Common.Services
         {
             this._client = client;
         }
-        public async Task<string> GetCurrentWeatherByLocation(double longitude, double latitude)
+        public async Task<string> GetCurrentWeatherByLocation(Location location)
         {
-            var response = await this._client.GetAsync($"weather?lat={latitude}&lon={longitude}&units=metric");
+            var response = await this._client.GetAsync($"weather?lat={location.Latitude}&lon={location.Longitude}&units=metric");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();

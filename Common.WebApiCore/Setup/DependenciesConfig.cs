@@ -10,7 +10,7 @@ namespace Common.WebApiCore.Setup
         {
             services.AddHttpContextAccessor();
 
-            ContainerExtension.Initialize(services, configuration);
+            ContainerExtension.Initialize(services, configuration, connectionString);
         }
     }
 }

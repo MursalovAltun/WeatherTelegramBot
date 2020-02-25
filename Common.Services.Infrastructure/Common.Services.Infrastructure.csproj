@@ -5,11 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MappingProfiles\" />
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Telegram.Bot" Version="15.4.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.DTO\Common.DTO.csproj" />
+    <ProjectReference Include="..\Common.Entities\Common.Entities.csproj" />
   </ItemGroup>
 
 </Project>

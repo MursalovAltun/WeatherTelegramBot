@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Common.WebApiCore.Controllers
@@ -24,12 +23,15 @@ namespace Common.WebApiCore.Controllers
     {
         private readonly ITelegramBotClient _telegramBotClient;
         private readonly IWeatherService _weatherService;
+        private readonly IWebhookHandlerService _webhookHandlerService;
 
         public WebhookController(ITelegramBotClient telegramBotClient,
-                                 IWeatherService weatherService)
+                                 IWeatherService weatherService,
+                                 IWebhookHandlerService webhookHandlerService)
         {
             this._telegramBotClient = telegramBotClient;
             this._weatherService = weatherService;
+            this._webhookHandlerService = webhookHandlerService;
         }
         /// <summary>
         /// Endpoint to handle telegram webhooks
@@ -49,61 +51,16 @@ namespace Common.WebApiCore.Controllers
                 {
                     if (update.Message.Type == MessageType.Location)
                     {
-                        var response =
-                            await this._weatherService.GetCurrentWeatherByLocation(update.Message.Location.Longitude,
-                                update.Message.Location.Latitude);
-                        var result =
-                            await this._telegramBotClient.SendTextMessageAsync(
-                                new ChatId(update.Message.Chat.Id), response);
+                        await this._webhookHandlerService.HandleLocationMessage(update.Message);
                     }
                     else if (update.Message.Type == MessageType.Text)
                     {
-                        switch (update.Message.Text)
-                        {
-                            case TelegramCommand.Start:
-                                {
-                                    var chatId = update.Message.Chat.Id;
-                                    var keyboardButtons = new KeyboardButton[][]
-                                    {
-                                        new KeyboardButton[]
-                                        {
-                                            new KeyboardButton
-                                            {
-                                                Text = "\U00002601 Current weather by location",
-                                                RequestLocation = true
-                                            }
-                                        },
-                                        new KeyboardButton[]
-                                        {
-                                            new KeyboardButton
-                                            {
-                                                Text = "\U0001F6AB Stop"
-                                            }
-                                        }
-                                    };
-                                    var rkm = new ReplyKeyboardMarkup
-                                    {
-                                        Keyboard = keyboardButtons,
-                                        ResizeKeyboard = true
-                                    };
-                                    await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
-                                    await Task.Delay(1000 * 1);
-                                    var result = await this._telegramBotClient.SendTextMessageAsync(
-                                        new ChatId(chatId),
-                                        $"Hi {update.Message.From.FirstName}\\. Nice to see you here\\! " +
-                                            "You can just send your current location to me to know a weather for now\\!",
-                                        ParseMode.MarkdownV2, replyMarkup: rkm);
-                                    break;
-                                }
-                            case TelegramCommand.CurrentWeather:
-                                if (update.Message.Type == MessageType.Location)
-                                {
-                                    
-                                }
-
-                                break;
-                        }
+                        await this._webhookHandlerService.HandleTextMessage(update.Message);
                     }
+                }
+                else if (update.Type == UpdateType.InlineQuery)
+                {
+                    //update.InlineQuery.
                 }
 
                 return Ok();
