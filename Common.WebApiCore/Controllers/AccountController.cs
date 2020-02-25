@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Common.DTO;
-using Common.Services;
-using Common.Services.Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Utf8Json;
+using Telegram.Bot;
 
 namespace Common.WebApiCore.Controllers
 {
@@ -14,11 +11,11 @@ namespace Common.WebApiCore.Controllers
     [Route("Account")]
     public class AccountController : ControllerBase
     {
-        private readonly ITelegramService _telegramService;
+        private readonly ITelegramBotClient _telegramBotClient;
 
-        public AccountController(ITelegramService telegramService)
+        public AccountController(ITelegramBotClient telegramBotClient)
         {
-            this._telegramService = telegramService;
+            this._telegramBotClient = telegramBotClient;
         }
 
         /// <summary>
@@ -27,10 +24,9 @@ namespace Common.WebApiCore.Controllers
         /// <returns>UserDTO object</returns>
         [HttpGet("GetBotInfo")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-
         public async Task<IActionResult> GetBotInfo()
         {
-            var bot = await this._telegramService.GetMeAsync();
+            var bot = await this._telegramBotClient.GetMeAsync();
             return Ok(bot);
         }
     }

@@ -25,8 +25,10 @@ namespace Common.Services
                 var result = await JsonSerializer.DeserializeAsync<RootUser>(contentStream);
                 return result.Result;
             }
-
-            throw new AuthenticationException("Could not authorize, please check telegram bot token");
+            else
+            {
+                throw new AuthenticationException("Could not authorize, please check telegram bot token");
+            }
         }
     }
 }

@@ -28,17 +28,14 @@ namespace Common.WebApiCore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                options.UseCentralRoutePrefix(new RouteAttribute("api"));
+            });
             ConfigureDependencies(services);
             services.ConfigureSwagger();
             services.ConfigureCors();
             services.AddAutoMapper(Assembly.Load("Common.Services.Infrastructure"));
-
-            //services.AddMvc(options =>
-            //    {
-            //        options.UseCentralRoutePrefix(new RouteAttribute("api"));
-            //    })
-            //.SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -17,14 +17,18 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.1" />
+    <PackageReference Include="Telegram.Bot" Version="15.4.0" />
     <PackageReference Include="Utf8Json.AspNetCoreMvcFormatter" Version="1.3.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Common.DIContainerCore\Common.DIContainerCore.csproj" />
+    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
   </ItemGroup>
 
 </Project>

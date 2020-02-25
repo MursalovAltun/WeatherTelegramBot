@@ -1,21 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{56DDEB76-DDA4-4637-BBBA-FECF8BB3896A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.WebApiCore", "Common.WebApiCore\Common.WebApiCore.csproj", "{FFDFA66A-92F8-4CD9-BC22-FA6D0E5E8500}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.WebApiCore", "Common.WebApiCore\Common.WebApiCore.csproj", "{FFDFA66A-92F8-4CD9-BC22-FA6D0E5E8500}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.DTO", "Common.DTO\Common.DTO.csproj", "{7489CA96-9795-4788-830C-1F55AD8166DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DTO", "Common.DTO\Common.DTO.csproj", "{7489CA96-9795-4788-830C-1F55AD8166DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Services", "Common.Services\Common.Services.csproj", "{EE999291-FBFC-4994-8BE3-54CA7EC9FC08}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Services", "Common.Services\Common.Services.csproj", "{EE999291-FBFC-4994-8BE3-54CA7EC9FC08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Utils", "Common.Utils\Common.Utils.csproj", "{18A87B1D-2CAE-4DE1-8A57-9EC5F8679BEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Utils", "Common.Utils\Common.Utils.csproj", "{18A87B1D-2CAE-4DE1-8A57-9EC5F8679BEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Services.Infrastructure", "Common.Services.Infrastructure\Common.Services.Infrastructure.csproj", "{037243FA-AA1B-4ED2-82C0-64DAD0DBF1FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Services.Infrastructure", "Common.Services.Infrastructure\Common.Services.Infrastructure.csproj", "{037243FA-AA1B-4ED2-82C0-64DAD0DBF1FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.DIContainerCore", "Common.DIContainerCore\Common.DIContainerCore.csproj", "{A558887A-B178-4DBB-BBC0-8241826AA9BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.DIContainerCore", "Common.DIContainerCore\Common.DIContainerCore.csproj", "{A558887A-B178-4DBB-BBC0-8241826AA9BC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Extensions", "Common.Extensions\Common.Extensions.csproj", "{48DC0661-75DC-4D3A-8A89-7D9D15EE61EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.DelegateHandlers", "Common.DelegateHandlers\Common.DelegateHandlers.csproj", "{74FF0690-B2F6-480C-97F2-C8F33630286B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,14 @@ Global
 		{A558887A-B178-4DBB-BBC0-8241826AA9BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A558887A-B178-4DBB-BBC0-8241826AA9BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A558887A-B178-4DBB-BBC0-8241826AA9BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48DC0661-75DC-4D3A-8A89-7D9D15EE61EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48DC0661-75DC-4D3A-8A89-7D9D15EE61EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48DC0661-75DC-4D3A-8A89-7D9D15EE61EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48DC0661-75DC-4D3A-8A89-7D9D15EE61EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74FF0690-B2F6-480C-97F2-C8F33630286B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74FF0690-B2F6-480C-97F2-C8F33630286B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74FF0690-B2F6-480C-97F2-C8F33630286B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74FF0690-B2F6-480C-97F2-C8F33630286B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +70,8 @@ Global
 		{18A87B1D-2CAE-4DE1-8A57-9EC5F8679BEC} = {56DDEB76-DDA4-4637-BBBA-FECF8BB3896A}
 		{037243FA-AA1B-4ED2-82C0-64DAD0DBF1FA} = {56DDEB76-DDA4-4637-BBBA-FECF8BB3896A}
 		{A558887A-B178-4DBB-BBC0-8241826AA9BC} = {56DDEB76-DDA4-4637-BBBA-FECF8BB3896A}
+		{48DC0661-75DC-4D3A-8A89-7D9D15EE61EB} = {56DDEB76-DDA4-4637-BBBA-FECF8BB3896A}
+		{74FF0690-B2F6-480C-97F2-C8F33630286B} = {56DDEB76-DDA4-4637-BBBA-FECF8BB3896A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3A6E8928-F0EA-4BAA-A3C7-B13628B85EEF}
