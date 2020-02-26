@@ -31,7 +31,14 @@ namespace Common.Services
 
             if (subscriber is null)
             {
-                subscriber = await this._subscriberService.Edit(this._mapper.Map<SubscriberDTO>(message.GetUser()));
+                var user = this._mapper.Map<SubscriberDTO>(message.GetUser());
+                user.ChatId = message.GetChatId();
+                subscriber = await this._subscriberService.Edit(user);
+            }
+            else if (subscriber.ChatId != message.GetChatId())
+            {
+                subscriber.ChatId = message.GetChatId();
+                subscriber = await this._subscriberService.Edit(subscriber);
             }
             else if (subscriber.IsDelete)
             {

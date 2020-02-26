@@ -37,6 +37,7 @@ namespace Common.WebApiCore
             services.ConfigureSwagger();
             services.ConfigureCors();
             services.AddAutoMapper(Assembly.Load("Common.Services.Infrastructure"));
+            services.ConfigureQuartz();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDataBaseInitializer dataBaseInitializer)

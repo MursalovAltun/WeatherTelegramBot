@@ -15,5 +15,7 @@ namespace Common.DTO
         public string WaitingFor { get; set; }
 
         public bool IsDelete { get; set; }
+
+        public long ChatId { get; set; }
     }
 }

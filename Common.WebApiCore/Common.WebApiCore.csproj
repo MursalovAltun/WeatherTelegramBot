@@ -22,6 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Quartz" Version="3.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0" />
     <PackageReference Include="System.Text.Json" Version="4.7.1" />
     <PackageReference Include="Telegram.Bot" Version="15.4.0" />
@@ -32,6 +33,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common.DIContainerCore\Common.DIContainerCore.csproj" />
     <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\Common.Jobs\Common.Jobs.csproj" />
     <ProjectReference Include="..\Common.Utils\Common.Utils.csproj" />
   </ItemGroup>
 

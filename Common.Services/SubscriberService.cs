@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Common.DTO;
@@ -19,6 +20,12 @@ namespace Common.Services
         {
             this._subscriberRepository = subscriberRepository;
             this._mapper = mapper;
+        }
+
+        public async Task<IEnumerable<SubscriberDTO>> GetAll()
+        {
+            var subscribers = await this._subscriberRepository.Get();
+            return this._mapper.Map<IEnumerable<SubscriberDTO>>(subscribers);
         }
 
         public async Task<SubscriberDTO> GetById(Guid id)

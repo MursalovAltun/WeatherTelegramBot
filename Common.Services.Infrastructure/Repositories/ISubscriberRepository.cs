@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.DTO;
 using Common.Entities;
@@ -8,6 +9,8 @@ namespace Common.Services.Infrastructure.Repositories
     public interface ISubscriberRepository
     {
         Task<Subscriber> Get(Guid id);
+
+        Task<IEnumerable<Subscriber>> Get();
 
         Task<bool> Exists(Subscriber obj);
 

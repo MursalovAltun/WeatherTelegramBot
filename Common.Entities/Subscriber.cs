@@ -9,5 +9,7 @@
         public string Username { get; set; }
 
         public string WaitingFor { get; set; }
+
+        public long ChatId { get; set; }
     }
 }

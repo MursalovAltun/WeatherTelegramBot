@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common.Entities;
@@ -14,6 +15,11 @@ namespace Common.DataAccess.EFCore.Repositories
         public override async Task<Subscriber> Get(Guid id)
         {
             return await this.dbContext.Subscribers.Where(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Subscriber>> Get()
+        {
+            return await this.dbContext.Subscribers.Where(x => !x.IsDelete).AsNoTracking().ToListAsync();
         }
 
         public override async Task<bool> Exists(Subscriber obj)

@@ -22,15 +22,12 @@ namespace Common.WebApiCore.Controllers
     public class WebhookController : ControllerBase
     {
         private readonly ITelegramBotClient _telegramBotClient;
-        private readonly IWeatherService _weatherService;
         private readonly IWebhookHandlerService _webhookHandlerService;
 
         public WebhookController(ITelegramBotClient telegramBotClient,
-                                 IWeatherService weatherService,
                                  IWebhookHandlerService webhookHandlerService)
         {
             this._telegramBotClient = telegramBotClient;
-            this._weatherService = weatherService;
             this._webhookHandlerService = webhookHandlerService;
         }
         /// <summary>
