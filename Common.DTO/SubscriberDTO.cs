@@ -12,6 +12,8 @@ namespace Common.DTO
 
         public string Username { get; set; }
 
+        public string WaitingFor { get; set; }
+
         public bool IsDelete { get; set; }
     }
 }

@@ -25,6 +25,10 @@ namespace Common.DataAccess.EFCore.Configuration
 
             builder.HasIndex(x => x.Username)
                 .IsUnique();
+
+            builder.Property(x => x.WaitingFor)
+                .HasMaxLength(50)
+                .IsRequired(false);
         }
     }
 }

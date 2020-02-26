@@ -10,7 +10,10 @@ namespace Common.Services.Infrastructure.MappingProfiles
         public SubscriberProfile()
         {
             CreateMap<Subscriber, SubscriberDTO>().ReverseMap();
-            CreateMap<User, SubscriberDTO>().ReverseMap();
+
+            CreateMap<User, SubscriberDTO>()
+                .ForMember(x => x.Id, opt => opt.Ignore())
+                .ReverseMap();
         }
     }
 }

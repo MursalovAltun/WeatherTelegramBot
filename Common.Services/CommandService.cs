@@ -5,9 +5,11 @@ using AutoMapper;
 using Common.DTO;
 using Common.Extensions;
 using Common.Services.Infrastructure.Services;
+using Common.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Common.Services
@@ -34,19 +36,7 @@ namespace Common.Services
         {
             var user = message.From;
             var chatId = message.Chat.Id;
-            var isFirstStart = false;
-            var isRecovered = false;
             var subscriber = await this._subscriberService.GetByUsername(user.Username);
-            if (subscriber is null)
-            {
-                isFirstStart = true;
-                subscriber = await this._subscriberService.Edit(this._mapper.Map<SubscriberDTO>(user));
-            }
-            else if (subscriber.IsDelete)
-            {
-                isRecovered = true;
-                await this._subscriberService.Recover(subscriber.Id);
-            }
             var rkm = new ReplyKeyboardMarkup
             {
                 Keyboard = this.CreateKeyboard(),
@@ -54,22 +44,9 @@ namespace Common.Services
             };
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
             await Task.Delay(1000 * 1);
-            string responseMessage;
-            if (isRecovered)
-            {
-                responseMessage = $"Hi {subscriber.FirstName}\\. Nice to see you here\\! " +
-                                  "You can just send your current location to me to know a weather for now\\!";
-            }
-            else
-            {
-                responseMessage = $"Hi {subscriber.FirstName}\\. Nice to see you here\\! " +
-                                  "You can just send your current location to me to know a weather for now\\!";
-            }
-            await this._telegramBotClient.SendTextMessageAsync(
-                new ChatId(chatId),
-                responseMessage,
-                ParseMode.MarkdownV2,
-                replyMarkup: rkm);
+            var responseMessage = $"Hi {subscriber.FirstName}\\. Nice to see you here\\! " +
+                                 "You can just send your current location to me to know a weather for now\\!";
+            await this._telegramBotClient.SendTextMessageAsync(chatId, responseMessage, ParseMode.MarkdownV2, replyMarkup: rkm);
         }
 
         public async Task HandleStop(Message message)
@@ -80,24 +57,91 @@ namespace Common.Services
             await this._subscriberService.Delete(subscriber.Id);
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
             await Task.Delay(1000 * 1);
-            await this._telegramBotClient.SendTextMessageAsync(
-                new ChatId(chatId),
-                $"Good bye {subscriber.FirstName} 🖐. We would like to see you again! ✌");
+            await this._telegramBotClient.SendTextMessageAsync(chatId, $"Good bye {subscriber.FirstName} 🖐. We would like to see you again! ✌");
         }
 
-        public async Task HandleCurrentWeatherInfo(Message message)
+        public async Task HandleCurrentWeatherInfoByLocation(Message message)
         {
             var chatId = message.GetChatId();
-            await this._telegramBotClient.SendChatActionAsync(new ChatId(chatId), ChatAction.FindLocation);
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
             await Task.Delay(1000 * 1);
-            //this._telegramBotClient.MakeRequestAsync()
             var response = await this._weatherService.GetCurrentWeatherByLocation(message.Location);
-            await this._telegramBotClient.SendTextMessageAsync(new ChatId(chatId), response);
+            var responseMessage = this._weatherService.GetReadableInfo(response);
+            var responseCaption = this._weatherService.GetIconUrl(response);
+            await this._telegramBotClient.SendPhotoAsync(chatId, responseCaption, responseMessage);
         }
 
-        public Task HandleUnknown()
+        public async Task HandleCurrentWeatherInfoByZipCode(Message message)
         {
-            throw new NotImplementedException();
+            var chatId = message.GetChatId();
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
+            await this._telegramBotClient.SendTextMessageAsync(chatId, "Please provide your zip code, for example: 00100,fi\n\n" +
+                                                                           "To terminate this operation please, just type /terminate", 
+                                                               ParseMode.Markdown, replyToMessageId: message.MessageId);
+        }
+
+        public async Task HandleCurrentWeatherInfoByZipCodeAnswer(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var response = await this._weatherService.GetCurrentWeatherByZipCode(message.Text);
+            var responseMessage = this._weatherService.GetReadableInfo(response);
+            var responseCaption = this._weatherService.GetIconUrl(response);
+            await this._telegramBotClient.SendPhotoAsync(chatId, responseCaption, responseMessage);
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            subscriber.WaitingFor = null;
+            await this._subscriberService.Edit(subscriber);
+        }
+
+        public async Task HandleCurrentWeatherInfoByCity(Message message)
+        {
+            var chatId = message.GetChatId();
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
+            await this._telegramBotClient.SendTextMessageAsync(chatId, "Please provide city name, for example: London\n\n" +
+                                                                           "You can additionally set state or country through \",\" for example:\n" +
+                                                                           "Charlotte,NC,US or London,UK\n\n" +
+                                                                           "To terminate this operation please, just type /terminate",
+                ParseMode.Markdown, replyToMessageId: message.MessageId);
+        }
+
+        public async Task HandleCurrentWeatherInfoByCityAnswer(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var response = await this._weatherService.GetCurrentWeatherByCity(message.Text);
+            var responseMessage = this._weatherService.GetReadableInfo(response);
+            var responseCaption = this._weatherService.GetIconUrl(response);
+            await this._telegramBotClient.SendPhotoAsync(chatId, responseCaption, responseMessage);
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            subscriber.WaitingFor = null;
+            await this._subscriberService.Edit(subscriber);
+        }
+
+        public async Task HandleTerminate(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
+
+            const string response = "This operation is terminated!";
+
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            subscriber.WaitingFor = null;
+            await this._subscriberService.Edit(subscriber);
+
+            await this._telegramBotClient.SendTextMessageAsync(chatId, response);
+        }
+
+        public async Task HandleUnknown(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
+            await this._telegramBotClient.SendTextMessageAsync(chatId, "Sorry, but I cannot understand you :(");
         }
 
         private IEnumerable<KeyboardButton[]> CreateKeyboard()
@@ -108,17 +152,31 @@ namespace Common.Services
                 {
                     new KeyboardButton
                     {
-                        Text = "☁ Current weather by location",
+                        Text = "📍 Current weather by location",
                         RequestLocation = true
                     }
                 },
-                new[]
+                new []
                 {
                     new KeyboardButton
                     {
-                        Text = "🚫 Stop"
+                        Text = TelegramCommand.CurrentWeatherByZipCodeButton
                     }
+                },
+                new []
+                {
+                    new KeyboardButton
+                    {
+                        Text = TelegramCommand.CurrentWeatherByCityButton
+                    } 
                 }
+                //new[]
+                //{
+                //    new KeyboardButton
+                //    {
+                //        Text = "🚫 Stop"
+                //    }
+                //}
             };
         }
     }

@@ -9,8 +9,18 @@ namespace Common.Services.Infrastructure.Services
 
         Task HandleStop(Message message);
 
-        Task HandleCurrentWeatherInfo(Message message);
+        Task HandleCurrentWeatherInfoByLocation(Message message);
 
-        Task HandleUnknown();
+        Task HandleCurrentWeatherInfoByZipCode(Message message);
+
+        Task HandleCurrentWeatherInfoByZipCodeAnswer(Message message);
+
+        Task HandleCurrentWeatherInfoByCity(Message message);
+
+        Task HandleCurrentWeatherInfoByCityAnswer(Message message);
+
+        Task HandleTerminate(Message message);
+
+        Task HandleUnknown(Message message);
     }
 }

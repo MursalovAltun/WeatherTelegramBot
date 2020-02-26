@@ -7,5 +7,7 @@
         public string LastName { get; set; }
 
         public string Username { get; set; }
+
+        public string WaitingFor { get; set; }
     }
 }
