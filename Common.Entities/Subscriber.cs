@@ -11,5 +11,9 @@
         public string WaitingFor { get; set; }
 
         public long ChatId { get; set; }
+
+        public string City { get; set; }
+
+        public virtual SubscriberSettings Settings { get; set; }
     }
 }

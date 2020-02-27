@@ -1,4 +1,5 @@
 ﻿using Common.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Common.DataAccess.EFCore.Configuration
@@ -31,6 +32,16 @@ namespace Common.DataAccess.EFCore.Configuration
                 .IsRequired(false);
 
             builder.Property(x => x.ChatId)
+                .IsRequired();
+
+            builder.Property(x => x.City)
+                .HasMaxLength(50)
+                .IsRequired(false);
+
+            builder.HasOne(x => x.Settings)
+                .WithOne(x => x.Subscriber)
+                .HasForeignKey<SubscriberSettings>(x => x.SubscriberId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
         }
     }
