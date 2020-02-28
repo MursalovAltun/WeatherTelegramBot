@@ -28,6 +28,12 @@ namespace Common.Services
             return this._mapper.Map<IEnumerable<SubscriberDTO>>(subscribers);
         }
 
+        public async Task<IEnumerable<SubscriberDTO>> GetDailyReceivers()
+        {
+            var subscribers = await this._subscriberRepository.GetDailyReceivers();
+            return this._mapper.Map<IEnumerable<SubscriberDTO>>(subscribers);
+        }
+
         public async Task<SubscriberDTO> GetById(Guid id)
         {
             var result = await this._subscriberRepository.Get(id);

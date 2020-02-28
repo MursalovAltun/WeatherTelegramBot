@@ -12,6 +12,8 @@ namespace Common.Services.Infrastructure.Repositories
 
         Task<IEnumerable<Subscriber>> Get();
 
+        Task<IEnumerable<Subscriber>> GetDailyReceivers();
+
         Task<bool> Exists(Subscriber obj);
 
         Task<Subscriber> Get(string username);

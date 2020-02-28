@@ -19,6 +19,12 @@ namespace Common.Services.Infrastructure.Services
 
         Task HandleCurrentWeatherInfoByCityAnswer(Message message);
 
+        Task HandleSetCity(Message message);
+
+        Task HandleSetCityAnswer(Message message);
+
+        Task HandleGetLocation(Message message);
+
         Task HandleTerminate(Message message);
 
         Task HandleUnknown(Message message);

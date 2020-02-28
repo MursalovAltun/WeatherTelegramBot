@@ -41,11 +41,29 @@ namespace Common.DIContainerCore
             services.AddScoped<IWebhookHandlerService, WebhookHandlerService>();
 
             services.AddScoped<ICommandService, CommandService>();
+
+            services.AddScoped<IKeyboardService, KeyboardService>();
+
+            services.AddScoped<ISubscriberSettingsService, SubscriberSettingsService>();
+
+            services.AddHttpClient<ITimezoneService, TimezoneService>(options =>
+            {
+                options.BaseAddress = new Uri(configuration["TimeZoneDb:ApiEndpoint"]);
+                options.Timeout = TimeSpan.FromSeconds(30);
+            }).AddHttpMessageHandler(options => new TimeZoneDbDelegateHandler(configuration));
+
+            services.AddHttpClient<IGeoCodeService, GeoCodeService>(options =>
+            {
+                options.BaseAddress = new Uri(configuration["GeoCodeXYZ:ApiEndpoint"]);
+                options.Timeout = TimeSpan.FromSeconds(30);
+            }).AddHttpMessageHandler(options => new GeoCodeXYZDelegateHandler(configuration));
         }
 
         private static void InitRepositories(IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<ISubscriberRepository, SubscriberRepository>();
+
+            services.AddScoped<ISubscriberSettingsRepository, SubscriberSettingsRepository>();
         }
     }
 }

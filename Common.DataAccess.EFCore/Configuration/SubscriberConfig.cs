@@ -43,6 +43,14 @@ namespace Common.DataAccess.EFCore.Configuration
                 .HasForeignKey<SubscriberSettings>(x => x.SubscriberId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
+
+            builder.Property(x => x.Language)
+                .HasMaxLength(2)
+                .HasDefaultValue("en")
+                .IsRequired();
+
+            builder.Property(x => x.UtcOffset)
+                .IsRequired(true);
         }
     }
 }

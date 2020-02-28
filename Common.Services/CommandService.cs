@@ -9,7 +9,6 @@ using Common.Utils;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace Common.Services
@@ -20,33 +19,37 @@ namespace Common.Services
         private readonly ITelegramBotClient _telegramBotClient;
         private readonly IMapper _mapper;
         private readonly IWeatherService _weatherService;
+        private readonly ISubscriberSettingsService _subscriberSettingsService;
+        private readonly ITimezoneService _timezoneService;
+        private readonly IGeoCodeService _geoCodeService;
 
         public CommandService(ISubscriberService subscriberService,
                               ITelegramBotClient telegramBotClient,
                               IMapper mapper,
-                              IWeatherService weatherService)
+                              IWeatherService weatherService,
+                              ISubscriberSettingsService subscriberSettingsService,
+                              ITimezoneService timezoneService,
+                              IGeoCodeService geoCodeService)
         {
             this._subscriberService = subscriberService;
             this._telegramBotClient = telegramBotClient;
             this._mapper = mapper;
             this._weatherService = weatherService;
+            this._subscriberSettingsService = subscriberSettingsService;
+            this._timezoneService = timezoneService;
+            this._geoCodeService = geoCodeService;
         }
 
         public async Task HandleStart(Message message)
         {
             var user = message.From;
             var chatId = message.Chat.Id;
-            var subscriber = await this._subscriberService.GetByUsername(user.Username);
-            var rkm = new ReplyKeyboardMarkup
-            {
-                Keyboard = this.CreateKeyboard(),
-                ResizeKeyboard = true
-            };
+
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
-            await Task.Delay(1000 * 1);
-            var responseMessage = $"Hi {subscriber.FirstName}\\. Nice to see you here\\! " +
-                                 "You can just send your current location to me to know a weather for now\\!";
-            await this._telegramBotClient.SendTextMessageAsync(chatId, responseMessage, ParseMode.MarkdownV2, replyMarkup: rkm);
+            var subscriber = await this._subscriberService.GetByUsername(user.Username);
+
+            var responseMessage = $"Hi {subscriber.FirstName}. Nice to see you here!";
+            await this._telegramBotClient.SendTextMessageAsync(chatId, responseMessage);
         }
 
         public async Task HandleStop(Message message)
@@ -76,7 +79,7 @@ namespace Common.Services
             var chatId = message.GetChatId();
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
             await this._telegramBotClient.SendTextMessageAsync(chatId, "Please provide your zip code, for example: 00100,fi\n\n" +
-                                                                           "To terminate this operation please, just type /terminate", 
+                                                                           "To terminate this operation please, just type /terminate",
                                                                ParseMode.Markdown, replyToMessageId: message.MessageId);
         }
 
@@ -121,6 +124,77 @@ namespace Common.Services
             await this._subscriberService.Edit(subscriber);
         }
 
+        public async Task HandleSetCity(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var inlineButtons = new[]
+            {
+                new []
+                {
+                    new InlineKeyboardButton
+                    {
+                        Text = "Enable",
+                        CallbackData = "/enable"
+                    },
+                    new InlineKeyboardButton
+                    {
+                        Text = "Disable",
+                        CallbackData = "/disable"
+                    }
+                }
+            };
+
+            var ikm = new InlineKeyboardMarkup(inlineButtons);
+
+            await this._telegramBotClient.SendTextMessageAsync(chatId, "Please provide a location so we can determine your city and timezone", replyMarkup: ikm);
+        }
+
+        public async Task HandleSetCityAnswer(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            subscriber.WaitingFor = null;
+            subscriber.City = message.Text;
+            await this._subscriberService.Edit(subscriber);
+            var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
+            if (subscriberSettings is null)
+            {
+                subscriberSettings = new SubscriberSettingsDTO
+                {
+                    SubscriberId = subscriber.Id
+                };
+            }
+            subscriberSettings.IsReceiveDailyWeather = true;
+            await this._subscriberSettingsService.Edit(subscriberSettings);
+
+            await this._telegramBotClient.SendTextMessageAsync(chatId, "✔️ Daily weather forecasts are successfully set!", replyMarkup: this.CreateKeyboard());
+        }
+
+        public async Task HandleGetLocation(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+
+            var timezone = await this._timezoneService.GetTimezoneByLocation(message.Location);
+            var geoCode = await this._geoCodeService.GetCityByLocation(message.Location);
+            subscriber.City = geoCode.City;
+            subscriber.UtcOffset = timezone.GmtOffset;
+            subscriber.WaitingFor = null;
+            await this._subscriberService.Edit(subscriber);
+
+            await this._telegramBotClient.SendTextMessageAsync(chatId,
+                "All set, now you can use all available commands!", replyMarkup: this.CreateKeyboard());
+        }
+
         public async Task HandleTerminate(Message message)
         {
             var chatId = message.GetChatId();
@@ -144,9 +218,9 @@ namespace Common.Services
             await this._telegramBotClient.SendTextMessageAsync(chatId, "Sorry, but I cannot understand you :(");
         }
 
-        private IEnumerable<KeyboardButton[]> CreateKeyboard()
+        private ReplyKeyboardMarkup CreateKeyboard()
         {
-            return new[]
+            var keyboard = new[]
             {
                 new[]
                 {
@@ -168,7 +242,13 @@ namespace Common.Services
                     new KeyboardButton
                     {
                         Text = TelegramCommand.CurrentWeatherByCityButton
-                    } 
+                    }
+                },
+                new[]
+                {
+                    new KeyboardButton {
+                        Text = "⚙️ Settings"
+                    }
                 }
                 //new[]
                 //{
@@ -177,6 +257,11 @@ namespace Common.Services
                 //        Text = "🚫 Stop"
                 //    }
                 //}
+            };
+            return new ReplyKeyboardMarkup
+            {
+                Keyboard = keyboard,
+                ResizeKeyboard = true
             };
         }
     }

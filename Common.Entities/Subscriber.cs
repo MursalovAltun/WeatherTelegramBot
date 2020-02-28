@@ -14,6 +14,10 @@
 
         public string City { get; set; }
 
+        public string Language { get; set; }
+
+        public int UtcOffset { get; set; }
+
         public virtual SubscriberSettings Settings { get; set; }
     }
 }

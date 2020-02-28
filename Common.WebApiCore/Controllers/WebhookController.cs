@@ -55,10 +55,10 @@ namespace Common.WebApiCore.Controllers
                         await this._webhookHandlerService.HandleTextMessage(update.Message);
                     }
                 }
-                else if (update.Type == UpdateType.InlineQuery)
-                {
-                    //update.InlineQuery.
-                }
+                //else if (update.Type == UpdateType.CallbackQuery)
+                //{
+                //    var upd = update;
+                //}
 
                 return Ok();
             }
@@ -84,7 +84,7 @@ namespace Common.WebApiCore.Controllers
         {
             await this._telegramBotClient.DeleteWebhookAsync();
             var baseUrl = this.HttpContext.GetBaseUrl();
-            await this._telegramBotClient.SetWebhookAsync($"{"https://f487056c.ngrok.io"}/api/Webhook/Handle", allowedUpdates: new List<UpdateType>()
+            await this._telegramBotClient.SetWebhookAsync($"{"https://e0ed1b61.ngrok.io"}/api/Webhook/Handle", allowedUpdates: new List<UpdateType>()
             {
                 UpdateType.CallbackQuery,
                 UpdateType.ChannelPost,

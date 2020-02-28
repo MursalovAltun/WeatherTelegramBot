@@ -12,6 +12,8 @@ namespace Common.DataAccess.EFCore
 
         public DbSet<Subscriber> Subscribers { get; set; }
 
+        public DbSet<SubscriberSettings> SubscriberSettings { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -9,6 +9,8 @@ namespace Common.Services.Infrastructure.Services
     {
         Task<IEnumerable<SubscriberDTO>> GetAll();
 
+        Task<IEnumerable<SubscriberDTO>> GetDailyReceivers();
+
         Task<SubscriberDTO> GetById(Guid id);
 
         Task<SubscriberDTO> GetByUsername(string username);

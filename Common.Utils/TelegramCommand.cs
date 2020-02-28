@@ -12,6 +12,14 @@
 
         public const string CurrentWeatherByCityButton = "🏙️ Current weather by city";
 
+        public const string GetLocationInfo = "📍 Send location";
+
+        public const string SettingsMenu = "⚙️ Settings";
+
+        public const string DailyForecasts = "📅 Daily forecasts";
+
+        public const string SetCity = "/setcity";
+
         public const string Terminate = "/terminate";
 
         public const string Stop = "/stop";

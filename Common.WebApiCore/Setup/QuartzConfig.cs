@@ -17,7 +17,7 @@ namespace Common.WebApiCore.Setup
 
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(DailyWeatherJob),
-                cronExpression: "0/5 * * * * ?"));
+                cronExpression: "0 * * * *"));
 
             services.AddHostedService<QuartzHostedService>();
         }

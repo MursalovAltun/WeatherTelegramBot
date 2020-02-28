@@ -14,22 +14,43 @@ namespace Common.DataAccess.EFCore.Repositories
 
         public override async Task<Subscriber> Get(Guid id)
         {
-            return await this.dbContext.Subscribers.Where(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
+            return await this.dbContext.Subscribers
+                .Where(x => x.Id == id)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Subscriber>> Get()
         {
-            return await this.dbContext.Subscribers.Where(x => !x.IsDelete).AsNoTracking().ToListAsync();
+            return await this.dbContext.Subscribers
+                .Where(x => !x.IsDelete)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Subscriber>> GetDailyReceivers()
+        {
+            return await this.dbContext.Subscribers
+                .Include(x => x.Settings)
+                .Where(x => !x.IsDelete && x.Settings.IsReceiveDailyWeather)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public override async Task<bool> Exists(Subscriber obj)
         {
-            return await this.dbContext.Subscribers.Where(x => x.Id == obj.Id).AsNoTracking().CountAsync() > 0;
+            return await this.dbContext.Subscribers
+                .Where(x => x.Id == obj.Id)
+                .AsNoTracking()
+                .CountAsync() > 0;
         }
 
         public async Task<Subscriber> Get(string username)
         {
-            return await this.dbContext.Subscribers.Where(x => x.Username == username).AsNoTracking().FirstOrDefaultAsync();
+            return await this.dbContext.Subscribers
+                .Where(x => x.Username == username && !x.IsDelete)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
         }
     }
 }

@@ -15,14 +15,17 @@ namespace Common.Services
         private readonly ICommandService _commandService;
         private readonly ISubscriberService _subscriberService;
         private readonly IMapper _mapper;
+        private readonly IKeyboardService _keyboardService;
 
         public WebhookHandlerService(ICommandService commandService,
                                      ISubscriberService subscriberService,
-                                     IMapper mapper)
+                                     IMapper mapper,
+                                     IKeyboardService keyboardService)
         {
             this._commandService = commandService;
             this._subscriberService = subscriberService;
             this._mapper = mapper;
+            this._keyboardService = keyboardService;
         }
 
         public async Task HandleTextMessage(Message message)
@@ -50,6 +53,7 @@ namespace Common.Services
                 {
                     case TelegramCommand.Start:
                         await this._commandService.HandleStart(message);
+                        await this._keyboardService.CreateGetGeneralInfo(message);
                         break;
                     case TelegramCommand.CurrentWeatherByZipCode:
                     case TelegramCommand.CurrentWeatherByZipCodeButton:
@@ -63,6 +67,14 @@ namespace Common.Services
                         await this._subscriberService.Edit(subscriber);
                         await this._commandService.HandleCurrentWeatherInfoByCity(message);
                         break;
+                    case TelegramCommand.SettingsMenu:
+                        await this._keyboardService.CreateSettings(message);
+                        break;
+                    case TelegramCommand.DailyForecasts:
+                        subscriber.WaitingFor = TelegramCommand.SetCity;
+                        await this._subscriberService.Edit(subscriber);
+                        await this._commandService.HandleSetCity(message);
+                        break;
                     case TelegramCommand.Stop:
                     case TelegramCommand.StopButton:
                         await this._commandService.HandleStop(message);
@@ -71,6 +83,7 @@ namespace Common.Services
                         break;
                     default:
                         await this._commandService.HandleUnknown(message);
+                        await this._keyboardService.CreateMain(message);
                         break;
                 }
             }
@@ -86,6 +99,9 @@ namespace Common.Services
                         case TelegramCommand.CurrentWeatherByCity:
                             await this._commandService.HandleCurrentWeatherInfoByCityAnswer(message);
                             break;
+                        case TelegramCommand.SetCity:
+                            await this._commandService.HandleSetCityAnswer(message);
+                            break;
                     }
                 }
                 else
@@ -98,7 +114,23 @@ namespace Common.Services
 
         public async Task HandleLocationMessage(Message message)
         {
-            await this._commandService.HandleCurrentWeatherInfoByLocation(message);
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            if (subscriber.WaitingFor != null)
+            {
+                switch (subscriber.WaitingFor)
+                {
+                    case TelegramCommand.SetCity:
+                        await this._commandService.HandleSetCityAnswer(message);
+                        break;
+                    case TelegramCommand.GetLocationInfo:
+                        await this._commandService.HandleGetLocation(message);
+                        break;
+                }
+            }
+            else
+            {
+                await this._commandService.HandleCurrentWeatherInfoByLocation(message);
+            }
         }
     }
 }
