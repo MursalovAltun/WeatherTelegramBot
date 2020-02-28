@@ -44,6 +44,7 @@ namespace Common.WebApiCore.Controllers
                 var stream = new StreamReader(request.Body);
                 var body = await stream.ReadToEndAsync();
                 update = JsonConvert.DeserializeObject<Update>(body);
+                
                 if (update.Type == UpdateType.Message)
                 {
                     if (update.Message.Type == MessageType.Location)
@@ -84,7 +85,7 @@ namespace Common.WebApiCore.Controllers
         {
             await this._telegramBotClient.DeleteWebhookAsync();
             var baseUrl = this.HttpContext.GetBaseUrl();
-            await this._telegramBotClient.SetWebhookAsync($"{"https://e0ed1b61.ngrok.io"}/api/Webhook/Handle", allowedUpdates: new List<UpdateType>()
+            await this._telegramBotClient.SetWebhookAsync($"{"https://telegramm-weather-bot.herokuapp.com"}/api/Webhook/Handle", allowedUpdates: new List<UpdateType>()
             {
                 UpdateType.CallbackQuery,
                 UpdateType.ChannelPost,
