@@ -19,9 +19,9 @@ namespace Common.Services.Infrastructure.Services
 
         Task HandleCurrentWeatherInfoByCityAnswer(Message message);
 
-        Task HandleSetCity(Message message);
+        Task HandleDailyForecastsSettings(Message message);
 
-        Task HandleSetCityAnswer(Message message);
+        Task HandleDailyForecastsSettingsAnswer(CallbackQuery callbackQuery);
 
         Task HandleGetLocation(Message message);
 

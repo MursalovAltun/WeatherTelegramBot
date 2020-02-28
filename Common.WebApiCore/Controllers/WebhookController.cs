@@ -55,10 +55,10 @@ namespace Common.WebApiCore.Controllers
                         await this._webhookHandlerService.HandleTextMessage(update.Message);
                     }
                 }
-                //else if (update.Type == UpdateType.CallbackQuery)
-                //{
-                //    var upd = update;
-                //}
+                else if (update.Type == UpdateType.CallbackQuery)
+                {
+                    await this._webhookHandlerService.HandleCallBackQuery(update.CallbackQuery);
+                }
 
                 return Ok();
             }

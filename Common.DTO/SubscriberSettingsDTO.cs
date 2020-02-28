@@ -8,6 +8,8 @@ namespace Common.DTO
 
         public bool IsReceiveDailyWeather { get; set; }
 
+        public string MeasureSystem { get; set; }
+
         public Guid SubscriberId { get; set; }
 
         public SubscriberDTO Subscriber { get; set; }

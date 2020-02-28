@@ -124,11 +124,16 @@ namespace Common.Services
             await this._subscriberService.Edit(subscriber);
         }
 
-        public async Task HandleSetCity(Message message)
+        public async Task HandleDailyForecastsSettings(Message message)
         {
             var chatId = message.GetChatId();
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
+
+            var isDailyForecastsEnabled = subscriberSettings != null && subscriberSettings.IsReceiveDailyWeather;
 
             var inlineButtons = new[]
             {
@@ -136,32 +141,31 @@ namespace Common.Services
                 {
                     new InlineKeyboardButton
                     {
-                        Text = "Enable",
-                        CallbackData = "/enable"
+                        Text = "✔️ Enable",
+                        CallbackData = TelegramCommand.EnableDailyForecasts
                     },
                     new InlineKeyboardButton
                     {
-                        Text = "Disable",
-                        CallbackData = "/disable"
+                        Text = "❌ Disable",
+                        CallbackData = TelegramCommand.DisableDailyForecasts
                     }
                 }
             };
 
             var ikm = new InlineKeyboardMarkup(inlineButtons);
 
-            await this._telegramBotClient.SendTextMessageAsync(chatId, "Please provide a location so we can determine your city and timezone", replyMarkup: ikm);
+            await this._telegramBotClient.SendTextMessageAsync(chatId, $"Current daily forecasts state: {(isDailyForecastsEnabled ? "✔️" : "❌")}", replyMarkup: ikm);
         }
 
-        public async Task HandleSetCityAnswer(Message message)
+        public async Task HandleDailyForecastsSettingsAnswer(CallbackQuery callbackQuery)
         {
-            var chatId = message.GetChatId();
+            var chatId = callbackQuery.Message.GetChatId();
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
 
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
-            subscriber.WaitingFor = null;
-            subscriber.City = message.Text;
-            await this._subscriberService.Edit(subscriber);
+            var isEnable = false || callbackQuery.Data == TelegramCommand.EnableDailyForecasts;
+
+            var subscriber = await this._subscriberService.GetByUsername(callbackQuery.From.Username);
             var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
             if (subscriberSettings is null)
             {
@@ -170,10 +174,10 @@ namespace Common.Services
                     SubscriberId = subscriber.Id
                 };
             }
-            subscriberSettings.IsReceiveDailyWeather = true;
+            subscriberSettings.IsReceiveDailyWeather = isEnable;
             await this._subscriberSettingsService.Edit(subscriberSettings);
 
-            await this._telegramBotClient.SendTextMessageAsync(chatId, "✔️ Daily weather forecasts are successfully set!", replyMarkup: this.CreateKeyboard());
+            await this._telegramBotClient.SendTextMessageAsync(chatId, $"✔️ Daily weather forecasts are successfully {(isEnable ? "enabled" : "disabled")}!", replyMarkup: this.CreateKeyboard());
         }
 
         public async Task HandleGetLocation(Message message)

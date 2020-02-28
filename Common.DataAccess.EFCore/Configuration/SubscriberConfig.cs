@@ -18,14 +18,10 @@ namespace Common.DataAccess.EFCore.Configuration
 
             builder.Property(x => x.LastName)
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired(false);
 
-            builder.Property(x => x.Username)
-                .HasMaxLength(100)
+            builder.Property(x => x.TelegramUserId)
                 .IsRequired();
-
-            builder.HasIndex(x => x.Username)
-                .IsUnique();
 
             builder.Property(x => x.WaitingFor)
                 .HasMaxLength(50)

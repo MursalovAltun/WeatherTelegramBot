@@ -32,6 +32,13 @@ namespace Common.Services
                     {
                         Text = TelegramCommand.DailyForecasts
                     }
+                },
+                new []
+                {
+                    new KeyboardButton
+                    {
+                        Text = TelegramCommand.MeasureSystem
+                    } 
                 }
             };
             var rkm = new ReplyKeyboardMarkup

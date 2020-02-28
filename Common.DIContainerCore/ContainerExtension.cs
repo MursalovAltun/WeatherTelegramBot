@@ -9,6 +9,8 @@ using Common.Services.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
 using Telegram.Bot;
 
 namespace Common.DIContainerCore
@@ -17,7 +19,14 @@ namespace Common.DIContainerCore
     {
         public static void Initialize(IServiceCollection services, IConfiguration configuration, string connectionString = null)
         {
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(connectionString));
+            //services.AddDbContext<DataContext>(options => options.UseMySql(connectionString));
+
+            services.AddDbContextPool<DataContext>(options => options
+                // replace with your connection string
+                .UseMySql("Server=localhost;Database=TelegramWeatherBot;User=root;Password=Deliri0us123;", mySqlOptions => mySqlOptions
+                    // replace with your Server Version and Type
+                    .ServerVersion(new ServerVersion(new Version(10, 1, 32), ServerType.MariaDb))
+                ));
 
             InitServices(services, configuration);
 

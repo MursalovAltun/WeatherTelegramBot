@@ -3,10 +3,33 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Common.DataAccess.EFCore.Migrations
 {
-    public partial class Add_SubscriberSettings : Migration
+    public partial class MySqlInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Subscribers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    ModifyDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    IsDelete = table.Column<bool>(nullable: false),
+                    TelegramUserId = table.Column<int>(nullable: false),
+                    FirstName = table.Column<string>(maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(maxLength: 50, nullable: true),
+                    Username = table.Column<string>(nullable: true),
+                    WaitingFor = table.Column<string>(maxLength: 50, nullable: true),
+                    ChatId = table.Column<long>(nullable: false),
+                    City = table.Column<string>(maxLength: 50, nullable: true),
+                    Language = table.Column<string>(maxLength: 2, nullable: false, defaultValue: "en"),
+                    UtcOffset = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscribers", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "SubscriberSettings",
                 columns: table => new
@@ -16,6 +39,7 @@ namespace Common.DataAccess.EFCore.Migrations
                     ModifyDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     IsDelete = table.Column<bool>(nullable: false),
                     IsReceiveDailyWeather = table.Column<bool>(nullable: false),
+                    MeasureSystem = table.Column<string>(maxLength: 10, nullable: false, defaultValue: "metric"),
                     SubscriberId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
@@ -40,6 +64,9 @@ namespace Common.DataAccess.EFCore.Migrations
         {
             migrationBuilder.DropTable(
                 name: "SubscriberSettings");
+
+            migrationBuilder.DropTable(
+                name: "Subscribers");
         }
     }
 }

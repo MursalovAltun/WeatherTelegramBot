@@ -2,6 +2,8 @@
 {
     public class Subscriber : BaseEntity
     {
+        public int TelegramUserId { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

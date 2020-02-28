@@ -71,9 +71,9 @@ namespace Common.Services
                         await this._keyboardService.CreateSettings(message);
                         break;
                     case TelegramCommand.DailyForecasts:
-                        subscriber.WaitingFor = TelegramCommand.SetCity;
-                        await this._subscriberService.Edit(subscriber);
-                        await this._commandService.HandleSetCity(message);
+                        await this._commandService.HandleDailyForecastsSettings(message);
+                        break;
+                    case TelegramCommand.MeasureSystem:
                         break;
                     case TelegramCommand.Stop:
                     case TelegramCommand.StopButton:
@@ -99,9 +99,6 @@ namespace Common.Services
                         case TelegramCommand.CurrentWeatherByCity:
                             await this._commandService.HandleCurrentWeatherInfoByCityAnswer(message);
                             break;
-                        case TelegramCommand.SetCity:
-                            await this._commandService.HandleSetCityAnswer(message);
-                            break;
                     }
                 }
                 else
@@ -119,9 +116,6 @@ namespace Common.Services
             {
                 switch (subscriber.WaitingFor)
                 {
-                    case TelegramCommand.SetCity:
-                        await this._commandService.HandleSetCityAnswer(message);
-                        break;
                     case TelegramCommand.GetLocationInfo:
                         await this._commandService.HandleGetLocation(message);
                         break;
@@ -130,6 +124,17 @@ namespace Common.Services
             else
             {
                 await this._commandService.HandleCurrentWeatherInfoByLocation(message);
+            }
+        }
+
+        public async Task HandleCallBackQuery(CallbackQuery callbackQuery)
+        {
+            switch (callbackQuery.Data)
+            {
+                case TelegramCommand.EnableDailyForecasts:
+                case TelegramCommand.DisableDailyForecasts:
+                    await this._commandService.HandleDailyForecastsSettingsAnswer(callbackQuery);
+                    break;
             }
         }
     }

@@ -6,6 +6,8 @@ namespace Common.Entities
     {
         public bool IsReceiveDailyWeather { get; set; }
 
+        public string MeasureSystem { get; set; }
+
         public Guid SubscriberId { get; set; }
 
         public virtual Subscriber Subscriber { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Common.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Common.DataAccess.EFCore.Configuration
@@ -15,6 +16,11 @@ namespace Common.DataAccess.EFCore.Configuration
                 .IsRequired();
 
             builder.Property(x => x.SubscriberId)
+                .IsRequired();
+
+            builder.Property(x => x.MeasureSystem)
+                .HasMaxLength(10)
+                .HasDefaultValue("metric")
                 .IsRequired();
         }
     }

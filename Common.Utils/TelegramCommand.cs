@@ -18,7 +18,15 @@
 
         public const string DailyForecasts = "📅 Daily forecasts";
 
-        public const string SetCity = "/setcity";
+        public const string EnableDailyForecasts = "/enabledailyforecasts";
+
+        public const string DisableDailyForecasts = "/disabledailyforecasts";
+
+        public const string MeasureSystem = "⚖️ Measure system";
+
+        public const string MeasureImperial = "/measureimplerial";
+
+        public const string MeasureMetric = "/measuremetric";
 
         public const string Terminate = "/terminate";
 

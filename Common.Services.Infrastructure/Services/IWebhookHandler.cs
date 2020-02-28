@@ -8,5 +8,7 @@ namespace Common.Services.Infrastructure.Services
         Task HandleTextMessage(Message message);
 
         Task HandleLocationMessage(Message message);
+
+        Task HandleCallBackQuery(CallbackQuery callbackQuery);
     }
 }
