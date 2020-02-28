@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Common.DataAccess.EFCore.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200228123404_MySqlInit")]
+    [Migration("20200228135237_MySqlInit")]
     partial class MySqlInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,9 +33,7 @@ namespace Common.DataAccess.EFCore.Migrations
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -57,9 +55,7 @@ namespace Common.DataAccess.EFCore.Migrations
                         .HasMaxLength(50);
 
                     b.Property<DateTime>("ModifyDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<int>("TelegramUserId")
                         .HasColumnType("int");
@@ -86,9 +82,7 @@ namespace Common.DataAccess.EFCore.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreationDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDelete")
                         .HasColumnType("tinyint(1)");
@@ -104,9 +98,7 @@ namespace Common.DataAccess.EFCore.Migrations
                         .HasDefaultValue("metric");
 
                     b.Property<DateTime>("ModifyDate")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime(6)")
-                        .HasDefaultValueSql("GETUTCDATE()");
+                        .HasColumnType("datetime(6)");
 
                     b.Property<Guid>("SubscriberId")
                         .HasColumnType("char(36)");

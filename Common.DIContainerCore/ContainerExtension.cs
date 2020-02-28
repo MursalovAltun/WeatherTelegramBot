@@ -23,10 +23,7 @@ namespace Common.DIContainerCore
 
             services.AddDbContextPool<DataContext>(options => options
                 // replace with your connection string
-                .UseMySql("Server=localhost;Database=TelegramWeatherBot;User=root;Password=Deliri0us123;", mySqlOptions => mySqlOptions
-                    // replace with your Server Version and Type
-                    .ServerVersion(new ServerVersion(new Version(10, 1, 32), ServerType.MariaDb))
-                ));
+                .UseMySql(connectionString));
 
             InitServices(services, configuration);
 

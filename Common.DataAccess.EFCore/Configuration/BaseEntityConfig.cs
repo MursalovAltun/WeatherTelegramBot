@@ -1,5 +1,6 @@
 ﻿using Common.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Common.DataAccess.EFCore.Configuration
@@ -18,15 +19,6 @@ namespace Common.DataAccess.EFCore.Configuration
         {
             builder.ToTable(this.TableName);
             builder.HasKey(obj => obj.Id);
-
-            builder.Property(x => x.CreationDate)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .IsRequired();
-
-            builder.Property(x => x.ModifyDate)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .ValueGeneratedOnAddOrUpdate()
-                .IsRequired();
         }
     }
 }

@@ -12,8 +12,8 @@ namespace Common.DataAccess.EFCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ModifyDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
                     IsDelete = table.Column<bool>(nullable: false),
                     TelegramUserId = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(maxLength: 50, nullable: false),
@@ -35,8 +35,8 @@ namespace Common.DataAccess.EFCore.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    ModifyDate = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    ModifyDate = table.Column<DateTime>(nullable: false),
                     IsDelete = table.Column<bool>(nullable: false),
                     IsReceiveDailyWeather = table.Column<bool>(nullable: false),
                     MeasureSystem = table.Column<string>(maxLength: 10, nullable: false, defaultValue: "metric"),

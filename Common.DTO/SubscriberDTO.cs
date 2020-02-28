@@ -6,6 +6,8 @@ namespace Common.DTO
     {
         public Guid Id { get; set; }
 
+        public int TelegramUserId { get; set; }
+
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
