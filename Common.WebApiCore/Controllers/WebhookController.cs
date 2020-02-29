@@ -87,7 +87,7 @@ namespace Common.WebApiCore.Controllers
         {
             await this._telegramBotClient.DeleteWebhookAsync();
 #if !DEBUG
-            var baseUrl = this.HttpContext.GetBaseUrl();
+            var baseUrl = "https://telegramm-weather-bot.herokuapp.com";
 #else
             // ngrok in localhost
             var baseUrl = "https://c1ffeac7.ngrok.io";
