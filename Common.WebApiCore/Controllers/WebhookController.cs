@@ -35,6 +35,7 @@ namespace Common.WebApiCore.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("Handle")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> HandleWebhook(Update update)
         {
