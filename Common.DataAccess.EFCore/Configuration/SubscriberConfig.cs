@@ -23,6 +23,9 @@ namespace Common.DataAccess.EFCore.Configuration
             builder.Property(x => x.TelegramUserId)
                 .IsRequired();
 
+            builder.HasIndex(x => x.TelegramUserId)
+                .IsUnique();
+
             builder.Property(x => x.WaitingFor)
                 .HasMaxLength(50)
                 .IsRequired(false);

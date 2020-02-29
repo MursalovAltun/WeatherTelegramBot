@@ -12,11 +12,13 @@ namespace Common.Services.Infrastructure.Repositories
 
         Task<IEnumerable<Subscriber>> Get();
 
+        Task<Subscriber> Get(string username);
+
+        Task<Subscriber> Get(int telegramUserId);
+
         Task<IEnumerable<Subscriber>> GetDailyReceivers();
 
         Task<bool> Exists(Subscriber obj);
-
-        Task<Subscriber> Get(string username);
 
         Task<Subscriber> Edit(Subscriber subscriber);
 

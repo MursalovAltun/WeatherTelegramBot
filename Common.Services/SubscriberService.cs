@@ -6,7 +6,6 @@ using Common.DTO;
 using Common.Entities;
 using Common.Services.Infrastructure.Repositories;
 using Common.Services.Infrastructure.Services;
-using Common.Utils;
 
 namespace Common.Services
 {
@@ -43,6 +42,12 @@ namespace Common.Services
         public async Task<SubscriberDTO> GetByUsername(string username)
         {
             var result = await this._subscriberRepository.Get(username);
+            return this._mapper.Map<SubscriberDTO>(result);
+        }
+
+        public async Task<SubscriberDTO> GetByTelegramUserId(int telegramUserId)
+        {
+            var result = await this._subscriberRepository.Get(telegramUserId);
             return this._mapper.Map<SubscriberDTO>(result);
         }
 

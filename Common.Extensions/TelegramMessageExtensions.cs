@@ -13,5 +13,15 @@ namespace Common.Extensions
         {
             return message.From;
         }
+
+        public static string GetUserUsername(this Message message)
+        {
+            return message.From.Username;
+        }
+
+        public static int GetUserTelegramId(this Message message)
+        {
+            return message.From.Id;
+        }
     }
 }

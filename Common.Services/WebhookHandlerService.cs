@@ -70,10 +70,14 @@ namespace Common.Services
                     case TelegramCommand.SettingsMenu:
                         await this._keyboardService.CreateSettings(message);
                         break;
+                    case TelegramCommand.GoBackSettings:
+                        await this._keyboardService.CreateMain(message);
+                        break;
                     case TelegramCommand.DailyForecasts:
                         await this._commandService.HandleDailyForecastsSettings(message);
                         break;
                     case TelegramCommand.MeasureSystem:
+                        await this._commandService.HandleMeasureSystemSettings(message);
                         break;
                     case TelegramCommand.Stop:
                     case TelegramCommand.StopButton:
@@ -134,6 +138,10 @@ namespace Common.Services
                 case TelegramCommand.EnableDailyForecasts:
                 case TelegramCommand.DisableDailyForecasts:
                     await this._commandService.HandleDailyForecastsSettingsAnswer(callbackQuery);
+                    break;
+                case TelegramCommand.MeasureImperial:
+                case TelegramCommand.MeasureMetric:
+                    await this._commandService.HandleMeasureSystemSettingsAnswer(callbackQuery);
                     break;
             }
         }

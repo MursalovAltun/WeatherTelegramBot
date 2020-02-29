@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Common.DTO;
 using Common.Extensions;
@@ -42,11 +40,10 @@ namespace Common.Services
 
         public async Task HandleStart(Message message)
         {
-            var user = message.From;
             var chatId = message.Chat.Id;
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
-            var subscriber = await this._subscriberService.GetByUsername(user.Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
 
             var responseMessage = $"Hi {subscriber.FirstName}. Nice to see you here!";
             await this._telegramBotClient.SendTextMessageAsync(chatId, responseMessage);
@@ -54,9 +51,8 @@ namespace Common.Services
 
         public async Task HandleStop(Message message)
         {
-            var user = message.From;
             var chatId = message.Chat.Id;
-            var subscriber = await this._subscriberService.GetByUsername(user.Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             await this._subscriberService.Delete(subscriber.Id);
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
             await Task.Delay(1000 * 1);
@@ -93,7 +89,7 @@ namespace Common.Services
             var responseMessage = this._weatherService.GetReadableInfo(response);
             var responseCaption = this._weatherService.GetIconUrl(response);
             await this._telegramBotClient.SendPhotoAsync(chatId, responseCaption, responseMessage);
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             subscriber.WaitingFor = null;
             await this._subscriberService.Edit(subscriber);
         }
@@ -119,7 +115,7 @@ namespace Common.Services
             var responseMessage = this._weatherService.GetReadableInfo(response);
             var responseCaption = this._weatherService.GetIconUrl(response);
             await this._telegramBotClient.SendPhotoAsync(chatId, responseCaption, responseMessage);
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             subscriber.WaitingFor = null;
             await this._subscriberService.Edit(subscriber);
         }
@@ -130,7 +126,7 @@ namespace Common.Services
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
 
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
 
             var isDailyForecastsEnabled = subscriberSettings != null && subscriberSettings.IsReceiveDailyWeather;
@@ -165,7 +161,7 @@ namespace Common.Services
 
             var isEnable = false || callbackQuery.Data == TelegramCommand.EnableDailyForecasts;
 
-            var subscriber = await this._subscriberService.GetByUsername(callbackQuery.From.Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(callbackQuery.Message.GetUserTelegramId());
             var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
             if (subscriberSettings is null)
             {
@@ -180,13 +176,77 @@ namespace Common.Services
             await this._telegramBotClient.SendTextMessageAsync(chatId, $"✔️ Daily weather forecasts are successfully {(isEnable ? "enabled" : "disabled")}!", replyMarkup: this.CreateKeyboard());
         }
 
+        public async Task HandleMeasureSystemSettings(Message message)
+        {
+            var chatId = message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
+            var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
+
+            var currentMeasureSystem = subscriberSettings.MeasureSystem;
+
+            var inlineButtons = new[]
+            {
+                new []
+                {
+                    new InlineKeyboardButton
+                    {
+                        Text = "Imperial",
+                        CallbackData = TelegramCommand.MeasureImperial
+                    },
+                    new InlineKeyboardButton
+                    {
+                        Text = "Metric",
+                        CallbackData = TelegramCommand.MeasureMetric
+                    }
+                }
+            };
+
+            var ikm = new InlineKeyboardMarkup(inlineButtons);
+
+            await this._telegramBotClient.SendTextMessageAsync(chatId, $"Current measure system: {currentMeasureSystem}", replyMarkup: ikm);
+        }
+
+        public async Task HandleMeasureSystemSettingsAnswer(CallbackQuery callbackQuery)
+        {
+            var chatId = callbackQuery.Message.GetChatId();
+
+            await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
+
+            var measureSystem = string.Empty;
+            if (callbackQuery.Data == TelegramCommand.MeasureMetric)
+            {
+                measureSystem = "metric";
+            }
+            else if(callbackQuery.Data == TelegramCommand.MeasureImperial)
+            {
+                measureSystem = "imperial";
+            }
+
+            var subscriber = await this._subscriberService.GetByTelegramUserId(callbackQuery.Message.GetUserTelegramId());
+            var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
+            if (subscriberSettings is null)
+            {
+                subscriberSettings = new SubscriberSettingsDTO
+                {
+                    SubscriberId = subscriber.Id
+                };
+            }
+            subscriberSettings.MeasureSystem = measureSystem;
+            await this._subscriberSettingsService.Edit(subscriberSettings);
+
+            await this._telegramBotClient.SendTextMessageAsync(chatId, $"✔️ Measure system is successfully changed to {measureSystem}!", replyMarkup: this.CreateKeyboard());
+        }
+
         public async Task HandleGetLocation(Message message)
         {
             var chatId = message.GetChatId();
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.FindLocation);
 
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
 
             var timezone = await this._timezoneService.GetTimezoneByLocation(message.Location);
             var geoCode = await this._geoCodeService.GetCityByLocation(message.Location);
@@ -207,7 +267,7 @@ namespace Common.Services
 
             const string response = "This operation is terminated!";
 
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             subscriber.WaitingFor = null;
             await this._subscriberService.Edit(subscriber);
 

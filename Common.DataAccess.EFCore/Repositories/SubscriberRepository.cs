@@ -28,6 +28,14 @@ namespace Common.DataAccess.EFCore.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Subscriber> Get(int telegramUserId)
+        {
+            return await this.dbContext.Subscribers
+                .Where(x => x.TelegramUserId == telegramUserId && !x.IsDelete)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<IEnumerable<Subscriber>> GetDailyReceivers()
         {
             return await this.dbContext.Subscribers

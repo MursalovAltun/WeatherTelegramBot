@@ -23,6 +23,10 @@ namespace Common.Services.Infrastructure.Services
 
         Task HandleDailyForecastsSettingsAnswer(CallbackQuery callbackQuery);
 
+        Task HandleMeasureSystemSettings(Message message);
+
+        Task HandleMeasureSystemSettingsAnswer(CallbackQuery callbackQuery);
+
         Task HandleGetLocation(Message message);
 
         Task HandleTerminate(Message message);

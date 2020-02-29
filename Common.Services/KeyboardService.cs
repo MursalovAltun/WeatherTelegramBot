@@ -39,6 +39,13 @@ namespace Common.Services
                     {
                         Text = TelegramCommand.MeasureSystem
                     } 
+                },
+                new []
+                {
+                    new KeyboardButton
+                    {
+                        Text = TelegramCommand.GoBackSettings
+                    } 
                 }
             };
             var rkm = new ReplyKeyboardMarkup

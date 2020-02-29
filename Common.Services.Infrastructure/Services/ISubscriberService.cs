@@ -15,6 +15,8 @@ namespace Common.Services.Infrastructure.Services
 
         Task<SubscriberDTO> GetByUsername(string username);
 
+        Task<SubscriberDTO> GetByTelegramUserId(int telegramUserId);
+
         Task<SubscriberDTO> Edit(SubscriberDTO dto);
 
         Task<bool> Delete(Guid id);

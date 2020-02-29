@@ -28,6 +28,8 @@
 
         public const string MeasureMetric = "/measuremetric";
 
+        public const string GoBackSettings = "🔙 Go back";
+
         public const string Terminate = "/terminate";
 
         public const string Stop = "/stop";
