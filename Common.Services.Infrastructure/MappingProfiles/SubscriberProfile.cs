@@ -13,6 +13,8 @@ namespace Common.Services.Infrastructure.MappingProfiles
 
             CreateMap<User, SubscriberDTO>()
                 .ForMember(x => x.Id, opt => opt.Ignore())
+                .ForMember(x => x.TelegramUserId, 
+                    opt => opt.MapFrom(src => src.Id))
                 .ReverseMap();
         }
     }

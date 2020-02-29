@@ -113,7 +113,7 @@ namespace Common.Services
             var chatId = message.Chat.Id;
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             subscriber.WaitingFor = TelegramCommand.GetLocationInfo;
             await this._subscriberService.Edit(subscriber);
 

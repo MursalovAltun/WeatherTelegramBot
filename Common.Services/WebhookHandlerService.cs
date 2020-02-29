@@ -30,7 +30,7 @@ namespace Common.Services
 
         public async Task HandleTextMessage(Message message)
         {
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
 
             if (subscriber is null)
             {
@@ -115,7 +115,7 @@ namespace Common.Services
 
         public async Task HandleLocationMessage(Message message)
         {
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             if (subscriber.WaitingFor != null)
             {
                 switch (subscriber.WaitingFor)

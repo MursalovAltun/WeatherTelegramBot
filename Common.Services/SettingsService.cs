@@ -33,7 +33,7 @@ namespace Common.Services
 
             await this._telegramBotClient.SendChatActionAsync(chatId, ChatAction.Typing);
 
-            var subscriber = await this._subscriberService.GetByUsername(message.GetUser().Username);
+            var subscriber = await this._subscriberService.GetByTelegramUserId(message.GetUserTelegramId());
             var subscriberSettings = await this._subscriberSettingsService.GetBySubscriberId(subscriber.Id);
 
             var isDailyForecastsEnabled = subscriberSettings != null && subscriberSettings.IsReceiveDailyWeather;
